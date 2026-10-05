@@ -1,40 +1,16 @@
-# NovaCalc — Professional Calculator
+# React + Vite
 
-A polished calculator project for a frontend internship/task assignment.
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## Features
+Currently, two official plugins are available:
 
-- Addition, subtraction, multiplication and division
-- Percentage and decimal support
-- AC (clear all) and backspace
-- Real-time result preview
-- Keyboard support
-- Calculation history with localStorage
-- Light/dark theme toggle
-- Responsive layout for desktop, tablet and mobile
-- Smooth hover, press and entrance animations
-- No external libraries required
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## How to run
+## React Compiler
 
-1. Put `index.html`, `style.css`, and `script.js` in the same folder.
-2. Open `index.html` in a browser.
-3. For the best VS Code workflow, install the **Live Server** extension and click **Go Live**.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Keyboard shortcuts
+## Expanding the Oxlint configuration
 
-- `0–9` → numbers
-- `+ - * /` → operators
-- `.` → decimal
-- `%` → percentage
-- `Enter` or `=` → calculate
-- `Backspace` → delete
-- `Esc` or `C` → clear
-
-## Suggested presentation points
-
-1. Explain the responsive layout and visual hierarchy.
-2. Demonstrate real-time calculation and keyboard input.
-3. Show history persistence using localStorage.
-4. Toggle the theme and resize the browser to demonstrate responsiveness.
-5. Explain that the project uses semantic HTML, modern CSS and vanilla JavaScript.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.

@@ -1,80 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="A professional responsive calculator built with HTML, CSS and JavaScript." />
-  <title>NovaCalc — Professional Calculator</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <main class="app-shell">
-    <section class="calculator" aria-label="Calculator">
-      <header class="topbar">
-        <div>
-          <p class="eyebrow">TASK 02</p>
-          <h1>Nova<span>Calc</span></h1>
-        </div>
-        <button class="theme-btn" id="themeToggle" type="button" aria-label="Toggle theme">☀</button>
-      </header>
-
-      <section class="display-card" aria-live="polite">
-        <div class="expression" id="expression">0</div>
-        <div class="result" id="result">0</div>
-      </section>
-
-      <div class="shortcut-hint">
-        <span>Keyboard supported</span>
-        <span class="dot"></span>
-        <span>Esc = Clear</span>
-      </div>
-
-      <section class="keypad">
-        <button class="key utility" data-action="clear">AC</button>
-        <button class="key utility" data-action="backspace">⌫</button>
-        <button class="key utility" data-action="percent">%</button>
-        <button class="key operator" data-value="/">÷</button>
-
-        <button class="key" data-value="7">7</button>
-        <button class="key" data-value="8">8</button>
-        <button class="key" data-value="9">9</button>
-        <button class="key operator" data-value="*">×</button>
-
-        <button class="key" data-value="4">4</button>
-        <button class="key" data-value="5">5</button>
-        <button class="key" data-value="6">6</button>
-        <button class="key operator" data-value="-">−</button>
-
-        <button class="key" data-value="1">1</button>
-        <button class="key" data-value="2">2</button>
-        <button class="key" data-value="3">3</button>
-        <button class="key operator" data-value="+">+</button>
-
-        <button class="key zero" data-value="0">0</button>
-        <button class="key" data-action="decimal">.</button>
-        <button class="key equals" data-action="equals">=</button>
-      </section>
-
-      <footer class="footer">
-        <span>Built with HTML • CSS • JavaScript</span>
-        <button class="history-toggle" id="historyToggle" type="button">History</button>
-      </footer>
-    </section>
-
-    <aside class="history-panel" id="historyPanel" aria-label="Calculation history">
-      <div class="history-head">
-        <div>
-          <p class="eyebrow">RECENT</p>
-          <h2>History</h2>
-        </div>
-        <button id="clearHistory" class="clear-history" type="button">Clear</button>
-      </div>
-      <div id="historyList" class="history-list">
-        <p class="empty-history">No calculations yet.</p>
-      </div>
-    </aside>
-  </main>
-
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>Naveen Chaudhary | Frontend Developer</title>
+    <meta name="description" content="Naveen Chaudhary — Frontend Developer from IIMT University. Building modern, responsive, and user-friendly web experiences with React, JavaScript, and Tailwind CSS." />
+    <meta name="keywords" content="Naveen Chaudhary, Frontend Developer, React Developer, Web Developer, IIMT University, Portfolio" />
+    <meta name="author" content="Naveen Chaudhary" />
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Naveen Chaudhary | Frontend Developer" />
+    <meta property="og:description" content="Frontend Developer from IIMT University. Building modern, responsive, and user-friendly web experiences." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://naveenchaudhary.dev" />
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Naveen Chaudhary | Frontend Developer" />
+    <meta name="twitter:description" content="Frontend Developer from IIMT University. Building modern, responsive, and user-friendly web experiences." />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
