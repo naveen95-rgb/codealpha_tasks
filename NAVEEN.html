@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio - Modern Animations & Visual Effects</title>
+  <style>
+    /* ==========================================================================
+       1. DESIGN SYSTEM & CSS VARIABLES
+       ========================================================================== */
+    :root {
+      --bg-dark: #0a0a0c;
+      --bg-card: #121216;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --accent-primary: #6366f1;
+      --accent-hover: #4f46e5;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border-light: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.3);
+      --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+      --ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-fast: 200ms var(--ease-in-out-smooth);
+      --transition-medium: 400ms var(--ease-out-cubic);
+      --transition-slow: 600ms var(--ease-out-cubic);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+    }
+
+    body {
+      overflow-x: hidden;
+    }
+
+    /* ==========================================================================
+       2. REUSABLE ANIMATIONS & UTILITIES
+       ========================================================================== */
+    .fade-up-init {
+      opacity: 0;
+      transform: translateY(24px);
+      will-change: opacity, transform;
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+    }
+
+    .fade-up-init.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Sequential keyframe entrance for initial hero load */
+    @keyframes heroFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Background Ambient Animation */
+    @keyframes gradientGlow {
+      0%, 100% { opacity: 0.4; transform: scale(1) translate(0, 0); }
+      50% { opacity: 0.7; transform: scale(1.1) translate(-2%, 2%); }
+    }
+
+    /* ==========================================================================
+       3. NAVBAR (Glassmorphism & Micro-interactions)
+       ========================================================================== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 8%;
+      background: rgba(10, 10, 12, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), padding var(--transition-fast);
+    }
+
+    .navbar.is-scrolled {
+      border-color: var(--border-light);
+      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      padding: 0.9rem 8%;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-link {
+      position: relative;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.25rem 0;
+      transition: color var(--transition-fast);
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--accent-primary);
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform var(--transition-medium);
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      flex-direction: column;
+      gap: 5px;
+      padding: 4px;
+    }
+
+    .mobile-menu-toggle span {
+      width: 22px;
+      height: 2px;
+      background-color: var(--text-main);
+      transition: transform var(--transition-fast), opacity var(--transition-fast);
+    }
+
+    /* ==========================================================================
+       4. HERO SECTION
+       ========================================================================== */
+    .hero {
+      position: relative;
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      overflow: hidden;
+    }
+
+    .hero-glow-element {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, rgba(0,0,0,0) 70%);
+      top: 50%;
+      left: 50%;
+      margin-top: -250px;
+      margin-left: -250px;
+      pointer-events: none;
+      animation: gradientGlow 12s ease-in-out infinite;
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: heroFadeUp 800ms var(--ease-out-cubic) forwards;
+      animation-delay: 100ms;
+      opacity: 0;
+    }
+
+    .hero-description {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: heroFadeUp 800ms var(--ease-out-cubic) forwards;
+      animation-delay: 250ms;
+      opacity: 0;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      border-radius: 99px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid transparent;
+      outline: none;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+      animation: heroFadeUp 800ms var(--ease-out-cubic) forwards;
+      animation-delay: 400ms;
+      opacity: 0;
+      will-change: transform;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-primary);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.25);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      background-color: var(--accent-hover);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    }
+
+    /* ==========================================================================
+       5. GALLERY & FILTER CONTROLS
+       ========================================================================== */
+    .portfolio-container {
+      padding: 4rem 8%;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border-light);
+      color: var(--text-muted);
+      padding: 0.5rem 1.25rem;
+      border-radius: 99px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--border-accent);
+      color: var(--text-main);
+      transform: translateY(-1px);
+    }
+
+    .filter-btn.active {
+      background-color: rgba(99, 102, 241, 0.1);
+      border-color: var(--accent-primary);
+      color: var(--accent-primary);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2rem;
+    }
+
+    /* Gallery Card Architecture */
+    .card {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-light);
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: transform var(--transition-medium), opacity var(--transition-medium), border-color var(--transition-fast), box-shadow var(--transition-fast);
+      will-change: transform, opacity;
+    }
+
+    .card.is-filtered-out {
+      opacity: 0;
+      transform: scale(0.92);
+      pointer-events: none;
+      position: absolute;
+      visibility: hidden;
+    }
+
+    .card-image-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 75%; /* 4:3 Aspect Ratio */
+      overflow: hidden;
+    }
+
+    .card-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform var(--transition-slow), filter var(--transition-medium);
+      will-change: transform;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(0deg, rgba(10, 10, 12, 0.9) 0%, rgba(10, 10, 12, 0) 60%);
+      opacity: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      transition: opacity var(--transition-medium);
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-main);
+      transform: translateY(12px);
+      transition: transform var(--transition-medium);
+    }
+
+    .card-category {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transform: translateY(12px);
+      transition: transform var(--transition-medium);
+      transition-delay: 50ms;
+    }
+
+    /* Hover Micro-interactions */
+    .card:hover {
+      border-color: var(--border-accent);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .card:hover .card-image {
+      transform: scale(1.06);
+      filter: brightness(0.9);
+    }
+
+    .card:hover .card-overlay {
+      opacity: 1;
+    }
+
+    .card:hover .card-title,
+    .card:hover .card-category {
+      transform: translateY(0);
+    }
+
+    /* ==========================================================================
+       6. LIGHTBOX MODULE
+       ========================================================================== */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(10, 10, 12, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--transition-medium);
+    }
+
+    .lightbox.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: scale(0.95);
+      transition: transform var(--transition-medium);
+    }
+
+    .lightbox.is-open .lightbox-content {
+      transform: scale(1);
+    }
+
+    .lightbox-image {
+      max-width: 100%;
+      max-height: 80vh;
+      border-radius: 8px;
+      object-fit: contain;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-light);
+    }
+
+    .lightbox-caption {
+      margin-top: 1rem;
+      color: var(--text-main);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .lightbox-btn {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: transform var(--transition-fast), background-color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .lightbox-btn:hover {
+      transform: scale(1.1);
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .lightbox-btn:active {
+      transform: scale(0.95);
+    }
+
+    .lightbox-close { top: -60px; right: 0; }
+    .lightbox-prev { left: -70px; top: 50%; transform: translateY(-50%); }
+    .lightbox-next { right: -70px; top: 50%; transform: translateY(-50%); }
+
+    .lightbox-prev:hover { transform: translateY(-50%) scale(1.1); }
+    .lightbox-next:hover { transform: translateY(-50%) scale(1.1); }
+
+    /* ==========================================================================
+       7. RESPONSIVE DESIGN & ACCESSIBILITY
+       ========================================================================== */
+    @media (max-width: 768px) {
+      .nav-links {
+        position: fixed;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--bg-card);
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        border-bottom: 1px solid var(--border-light);
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform var(--transition-medium), opacity var(--transition-medium);
+      }
+
+      .nav-links.is-active {
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .mobile-menu-toggle {
+        display: flex;
+      }
+
+      .lightbox-prev { left: 10px; top: auto; bottom: -60px; transform: none; }
+      .lightbox-next { right: 10px; top: auto; bottom: -60px; transform: none; }
+      .lightbox-prev:hover { transform: scale(1.1); }
+      .lightbox-next:hover { transform: scale(1.1); }
+    }
+
+    /* Accessibility: Respect Reduced Motion Choices */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+      .fade-up-init {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .hero-glow-element {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <a href="#" class="brand">LUMINA</a>
+    <button class="mobile-menu-toggle" id="mobileToggle" aria-label="Toggle Navigation">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero" class="nav-link active">Home</a></li>
+      <li><a href="#work" class="nav-link">Work</a></li>
+      <li><a href="#about" class="nav-link">About</a></li>
+      <li><a href="#contact" class="nav-link">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div class="hero-glow-element" aria-hidden="true"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Visual Precision & Creative Elegance</h1>
+      <p class="hero-description">A minimal showcase of digital artwork, architectural rendering, and modern design systems crafted with performant web technology.</p>
+      <a href="#work" class="btn btn-primary">Explore Portfolio</a>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO / GALLERY SECTION -->
+  <main class="portfolio-container" id="work">
+    <!-- Filter Controls -->
+    <div class="filter-bar fade-up-init">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="architecture">Architecture</button>
+      <button class="filter-btn" data-filter="nature">Nature</button>
+      <button class="filter-btn" data-filter="minimal">Minimal</button>
+    </div>
+
+    <!-- Grid Container -->
+    <div class="gallery-grid" id="galleryGrid">
+      
+      <div class="card fade-up-init" data-category="architecture" data-src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80">
+        <div class="card-image-wrapper">
+          <img class="card-image" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Modern Structure" loading="lazy">
+        </div>
+        <div class="card-overlay">
+          <h2 class="card-title">Glass Structure</h2>
+          <span class="card-category">Architecture</span>
+        </div>
+      </div>
+
+      <div class="card fade-up-init" data-category="nature" data-src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80">
+        <div class="card-image-wrapper">
+          <img class="card-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80" alt="Alpine Lake" loading="lazy">
+        </div>
+        <div class="card-overlay">
+          <h2 class="card-title">Alpine Solitude</h2>
+          <span class="card-category">Nature</span>
+        </div>
+      </div>
+
+      <div class="card fade-up-init" data-category="minimal" data-src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=80">
+        <div class="card-image-wrapper">
+          <img class="card-image" src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80" alt="Abstract Lines" loading="lazy">
+        </div>
+        <div class="card-overlay">
+          <h2 class="card-title">Shadow Composition</h2>
+          <span class="card-category">Minimal</span>
+        </div>
+      </div>
+
+      <div class="card fade-up-init" data-category="architecture" data-src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80">
+        <div class="card-image-wrapper">
+          <img class="card-image" src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80" alt="Minimal Interior" loading="lazy">
+        </div>
+        <div class="card-overlay">
+          <h2 class="card-title">Monochrome Interior</h2>
+          <span class="card-category">Architecture</span>
+        </div>
+      </div>
+
+      <div class="card fade-up-init" data-category="nature" data-src="https://images.unsplash.com/photo-1511497584788-8767611136f6?auto=format&fit=crop&w=1200&q=80">
+        <div class="card-image-wrapper">
+          <img class="card-image" src="https://images.unsplash.com/photo-1511497584788-8767611136f6?auto=format&fit=crop&w=600&q=80" alt="Mist Forest" loading="lazy">
+        </div>
+        <div class="card-overlay">
+          <h2 class="card-title">Misty Ridge</h2>
+          <span class="card-category">Nature</span>
+        </div>
+      </div>
+
+      <div class="card fade-up-init" data-category="minimal" data-src="https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=1200&q=80">
+        <div class="card-image-wrapper">
+          <img class="card-image" src="https://images.unsplash.com/photo-1509281373149-e957c6296406?auto=format&fit=crop&w=600&q=80" alt="Geometry Light" loading="lazy">
+        </div>
+        <div class="card-overlay">
+          <h2 class="card-title">Prism Study</h2>
+          <span class="card-category">Minimal</span>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- LIGHTBOX MODULE -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog">
+    <button class="lightbox-btn lightbox-close" id="lightboxClose" aria-label="Close Lightbox">&times;</button>
+    <button class="lightbox-btn lightbox-prev" id="lightboxPrev" aria-label="Previous Image">&#8249;</button>
+    <button class="lightbox-btn lightbox-next" id="lightboxNext" aria-label="Next Image">&#8250;</button>
+    <div class="lightbox-content">
+      <img class="lightbox-image" id="lightboxImg" src="" alt="Lightbox View">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT ORCHESTRATION -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      /* ==========================================================================
+         1. SCROLL OBSERVER (Scroll-driven reveal animations)
+         ========================================================================== */
+      const observeElements = document.querySelectorAll('.fade-up-init');
+
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Apply staggered delays dynamically based on element sibling index
+            const card = entry.target;
+            const index = Array.from(card.parentNode.children).indexOf(card) % 4;
+            card.style.transitionDelay = `${index * 80}ms`;
+            
+            card.classList.add('is-visible');
+            observer.unobserve(card); // Animate once for performance
+          }
+        });
+      }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+      });
+
+      observeElements.forEach(el => revealObserver.observe(el));
+
+      /* ==========================================================================
+         2. NAVBAR STICKY EFFECTS & MOBILE TOGGLE
+         ========================================================================== */
+      const navbar = document.getElementById('navbar');
+      const mobileToggle = document.getElementById('mobileToggle');
+      const navLinks = document.getElementById('navLinks');
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 20) {
+          navbar.classList.add('is-scrolled');
+        } else {
+          navbar.classList.remove('is-scrolled');
+        }
+      }, { passive: true });
+
+      mobileToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('is-active');
+      });
+
+      /* ==========================================================================
+         3. CATEGORY FILTERING (Smooth Scale-Out/Fade-In)
+         ========================================================================== */
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const cards = document.querySelectorAll('.card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Update button active state
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const filterValue = btn.getAttribute('data-filter');
+
+          cards.forEach(card => {
+            const matches = filterValue === 'all' || card.getAttribute('data-category') === filterValue;
+
+            if (matches) {
+              card.classList.remove('is-filtered-out');
+              // Request animation frame for smooth re-entry
+              requestAnimationFrame(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'scale(1)';
+              });
+            } else {
+              card.style.opacity = '0';
+              card.style.transform = 'scale(0.92)';
+              // Delay hiding from layout to match CSS duration
+              setTimeout(() => {
+                card.classList.add('is-filtered-out');
+              }, 400);
+            }
+          });
+        });
+      });
+
+      /* ==========================================================================
+         4. LIGHTBOX ENGINE
+         ========================================================================== */
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightboxImg');
+      const lightboxCaption = document.getElementById('lightboxCaption');
+      const lightboxClose = document.getElementById('lightboxClose');
+      const lightboxPrev = document.getElementById('lightboxPrev');
+      const lightboxNext = document.getElementById('lightboxNext');
+
+      let visibleCards = [];
+      let currentIndex = 0;
+
+      function updateVisibleCards() {
+        visibleCards = Array.from(cards).filter(card => !card.classList.contains('is-filtered-out'));
+      }
+
+      function openLightbox(index) {
+        updateVisibleCards();
+        if (visibleCards.length === 0) return;
+
+        currentIndex = index;
+        const targetCard = visibleCards[currentIndex];
+        const imgSrc = targetCard.getAttribute('data-src');
+        const title = targetCard.querySelector('.card-title').textContent;
+
+        lightboxImg.src = imgSrc;
+        lightboxCaption.textContent = title;
+
+        lightbox.classList.add('is-open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('is-open');
+        lightbox.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      function navigateLightbox(direction) {
+        updateVisibleCards();
+        currentIndex = (currentIndex + direction + visibleCards.length) % visibleCards.length;
+        
+        // Subtle image swap animation
+        lightboxImg.style.opacity = '0.4';
+        lightboxImg.style.transform = 'scale(0.98)';
+        
+        setTimeout(() => {
+          const targetCard = visibleCards[currentIndex];
+          lightboxImg.src = targetCard.getAttribute('data-src');
+          lightboxCaption.textContent = targetCard.querySelector('.card-title').textContent;
+          lightboxImg.style.opacity = '1';
+          lightboxImg.style.transform = 'scale(1)';
+        }, 150);
+      }
+
+      // Event Listeners for Lightbox
+      cards.forEach(card => {
+        card.addEventListener('click', () => {
+          updateVisibleCards();
+          const cardIndex = visibleCards.indexOf(card);
+          if (cardIndex !== -1) openLightbox(cardIndex);
+        });
+      });
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightboxPrev.addEventListener('click', () => navigateLightbox(-1));
+      lightboxNext.addEventListener('click', () => navigateLightbox(1));
+
+      // Close lightbox when clicking ambient background
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      // Keyboard Controls
+      document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('is-open')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') navigateLightbox(-1);
+        if (e.key === 'ArrowRight') navigateLightbox(1);
+      });
+    });
+  </script>
+</body>
+</html>
